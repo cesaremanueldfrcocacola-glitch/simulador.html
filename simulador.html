@@ -1,1 +1,55 @@
+Uso este ?
 
+<!DOCTYPE html>    <html lang="es">      <head>      
+<meta charset="UTF-8">      
+<title>Simulador ESP32 - DFR AUTO</title>      
+</head>      
+<body style="font-family: Arial; background:#111; color:#0f0; padding:20px;">    <h2>Simulador ESP32</h2>    <button onclick="conectar()">🟢 Conectar ESP32</button>  
+<button onclick="desconectar()">🔴 Desconectar</button>  
+<br><br>  <button onclick="libre()">🚗 Estado: LIBRE</button>
+<button onclick="bloqueado()">🔒 Estado: BLOQUEADO</button>
+
+<p id="estado">Estado: --</p>    <script type="module">      
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";      
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";      // 🔥 TU MISMA CONFIG FIREBASE
+const firebaseConfig = {
+apiKey: "AIzaSyAYooRkh0w9hL8qCvhdUxywsWMMncU5EIM",
+authDomain: "stockdfr-94cd4.firebaseapp.com",
+databaseURL: "https://stockdfr-94cd4-default-rtdb.firebaseio.com",
+projectId: "stockdfr-94cd4",
+storageBucket: "stockdfr-94cd4.appspot.com",
+messagingSenderId: "600419356379",
+appId: "1:600419356379:web:2b1bd2b32e88f71f6886fe"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// 🔌 conexión
+window.conectar = async () => {
+await set(ref(db, "/auto/online"), true);
+document.getElementById("estado").innerText = "Estado: CONECTADO";
+};
+
+// 🔴 desconexión
+window.desconectar = async () => {
+await set(ref(db, "/auto/online"), false);
+document.getElementById("estado").innerText = "Estado: DESCONECTADO";
+};
+
+// 🚗 libre
+window.libre = async () => {
+await set(ref(db, "/auto/estado"), "libre");
+await set(ref(db, "/auto/ultima_vez"), new Date().toLocaleTimeString());
+document.getElementById("estado").innerText = "Estado: LIBRE";
+};
+
+// 🔒 bloqueado
+window.bloqueado = async () => {
+await set(ref(db, "/auto/estado"), "bloqueado");
+await set(ref(db, "/auto/ultima_vez"), new Date().toLocaleTimeString());
+document.getElementById("estado").innerText = "Estado: BLOQUEADO";
+};
+</script>    </body>
+
+</html>
